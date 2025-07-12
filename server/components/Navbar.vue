@@ -21,7 +21,7 @@
       <div class="container mx-auto">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center justify-between">
-            <a href="/" class="text-4xl ml-5 font-mono font-bold transition-colors text-purple-100 hover:text-purple-300">DevConnect</a>
+            <a href="" class="text-4xl ml-5 font-mono font-bold transition-colors text-purple-100 hover:text-purple-300">DevConnect</a>
             <a href="dashboard" class="text-xl mt-1 ml-5 font-mono transition-colors text-purple-100 hover:text-purple-300">Dashboard</a>
           </div>
           <div class="mr-5">
