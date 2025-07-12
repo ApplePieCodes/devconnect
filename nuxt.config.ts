@@ -4,10 +4,12 @@ import tailwindcss from "@tailwindcss/vite"
 export default defineNuxtConfig({
   app: {
     baseURL: '/devconnect/',
+
     head: {
-      link: [
-        {rel: 'stylesheet', href: 'app.css'}
+      script: [
+        {src: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"}
       ]
     }
   },
+  compatibilityDate: '2025-07-11',
 })
