@@ -2,8 +2,6 @@
   import { onMounted, ref } from 'vue'
   import { supabase } from "~/server";
   import UserIcon from "~/server/components/UserIcon.vue";
-  import CustomButton from "~/server/components/CustomButton.vue";
-  import ButtonGroup from "~/server/components/ButtonGroup.vue";
 
   const loggedIn = ref(false);
   const loggedInUserId = ref('');
@@ -21,30 +19,13 @@
       <div class="container mx-auto">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center justify-between">
-            <a href="./" class="text-4xl ml-5 font-mono font-bold transition-colors text-purple-100 hover:text-purple-300">DevConnect</a>
-            <a href="dashboard" class="text-xl mt-1 ml-5 font-mono transition-colors text-purple-100 hover:text-purple-300">Dashboard</a>
+            <NuxtLink href="/" class="text-4xl ml-5 font-mono font-bold transition-colors text-purple-100 hover:text-purple-300 transition-all duration-300 hover:drop-shadow-2xl">DevConnect</NuxtLink>
+            <NuxtLink href="/dashboard" class="text-xl mt-1 ml-5 font-mono transition-colors text-purple-100 hover:text-purple-300 transition-all duration-300 hover:drop-shadow-2xl">Dashboard</NuxtLink>
           </div>
           <div class="mr-5">
-            <ButtonGroup v-if="!loggedIn">
-              <CustomButton
-                  link="signup"
-                  text="Sign up"
-                  foreground="text-gray-50"
-                  foreground-hover="hover:text-gray-200"
-                  background="bg-gray-800"
-                  background-hover="hover:bg-gray-600"
-              />
-              <CustomButton
-                  link="login"
-                  text="Log in"
-                  foreground="text-gray-50"
-                  foreground-hover="hover:text-gray-200"
-                  background="bg-purple-600"
-                  background-hover="hover:bg-purple-500"
-              />
-            </ButtonGroup>
+            <NuxtLink to="/signup" class="bg-purple-500 text-purple-100 px-4 py-3 rounded-2xl font-bold font-mono hover:bg-purple-600 transition-all duration-300 hover:drop-shadow-2xl" v-if="!loggedIn">Sign Up</NuxtLink>
 
-            <UserIcon v-else :id="loggedInUserId" />
+            <UserIcon v-else :id="loggedInUserId" class="transition-all duration-300 hover:drop-shadow-2xl"/>
           </div>
         </div>
       </div>
