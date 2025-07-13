@@ -1,13 +1,17 @@
 <template>
   <div class="bg-purple-950 min-h-screen">
-    <Navbar/>
-    <div class="flex flex-col max-w-2xl mx-auto">
+    <div class="flex flex-col max-w-2xl mx-auto" v-if="posts.length > 0">
+      <Navbar/>
       <PostCard
           v-for="post in posts"
           :key="post"
           :id="post"
           :onQuote="() => openQuoteModal(post)"
       />
+    </div>
+    <div class="flex flex-col max-w-2xl mx-auto text-center min-h-screen justify-center items-center place-items-center" v-else>
+      <Navbar/>
+      <p class="text-2xl font-mono font-bold mb-30 text-purple-100">Nothing here yet. Start posting!</p>
     </div>
 
     <QuoteModal

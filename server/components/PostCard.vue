@@ -21,6 +21,7 @@ const postUpvoted = ref(false)
 const quotePost = ref(false)
 const parentPoster = ref('')
 const parentContent = ref('')
+const postIsViewers = ref(false)
 
 onMounted(async () => {
   const { data: pData } = await supabase.from('posts').select('*').eq('id', props.id).limit(1)
@@ -59,6 +60,9 @@ onMounted(async () => {
     parentPoster.value = parentUserData?.[0]?.username || ''
     parentContent.value = parentPostData?.[0]?.content || ''
   }
+  if (post.poster === await getLoggedInUserID()) {
+    postIsViewers.value = true
+  }
 })
 
 async function upvoteClicked() {
@@ -85,10 +89,16 @@ function quoteClicked() {
 async function reportClicked() {
   await supabase.rpc('reportpost', { post: props.id })
 }
+
+async function deleteClicked() {
+  await supabase.rpc('deletepost', { post_id: props.id })
+  // @ts-expect-error: window is available in browser
+  window.location.reload()
+}
 </script>
 
 <template>
-  <div class="flex items-start gap-4 mt-5 rounded-xl px-5 py-5 bg-purple-700 text-white">
+  <div class="flex items-start gap-4 mt-5 rounded-xl px-5 py-5 bg-purple-700 text-white hover:drop-shadow-2xl transition-all duration-300">
     <UserIcon v-if="userId" :id="userId" />
 
     <div>
@@ -109,35 +119,36 @@ async function reportClicked() {
       <p class="my-2 text-base">{{ body }}</p>
 
       <ButtonGroup>
-        <GroupedLogicButton
-            :action="upvoteClicked"
-            foreground="text-white"
-            :background="postUpvoted ? 'bg-purple-600' : 'bg-gray-800'"
-            foreground-hover="hover:text-gray-50"
-            :background-hover="postUpvoted ? 'hover:bg-purple-500' : 'hover:bg-gray-700'"
+        <button
+            @click="upvoteClicked"
+            class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white hover:text-gray-50"
+            :class="postUpvoted ? 'bg-purple-600 hover:bg-purple-500' : 'bg-gray-800 hover:bg-gray-700'"
         >
           Upvote
-        </GroupedLogicButton>
+        </button>
 
-        <GroupedLogicButton
-            :action="quoteClicked"
-            foreground="text-white"
-            background="bg-gray-800"
-            foreground-hover="hover:text-gray-50"
-            background-hover="hover:bg-gray-700"
+
+        <button
+            @click="quoteClicked"
+            class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
         >
           Quote
-        </GroupedLogicButton>
+        </button>
 
-        <GroupedLogicButton
-            :action="reportClicked"
-            foreground="text-white"
-            background="bg-gray-800"
-            foreground-hover="hover:text-gray-50"
-            background-hover="hover:bg-gray-700"
+        <button
+            @click="reportClicked"
+            class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
         >
           Report
-        </GroupedLogicButton>
+        </button>
+
+        <button
+            @click="deleteClicked"
+            class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
+            v-if="postIsViewers"
+        >
+          Delete Post
+        </button>
       </ButtonGroup>
     </div>
   </div>

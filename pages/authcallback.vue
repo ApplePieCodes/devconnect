@@ -11,12 +11,8 @@ onMounted(async () => {
     auth_id: id,
   })
 
-  const path =
-      window.location.origin === 'https://applepiecodes.github.io'
-          ? '/devconnect/dashboard'
-          : '/dashboard'
 
-  window.location.replace(window.location.origin + path)
+  window.location.replace(window.location.origin + '/devconnect/dashboard')
 })
 </script>
 
