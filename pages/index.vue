@@ -1,5 +1,17 @@
 <script setup lang="ts">
 import Navbar from "~/server/components/Navbar.vue";
+import {supabase} from "~/server"
+
+let signedIn = ref(false);
+
+onMounted(async () => {
+
+  let {data, error} = await supabase.auth.getUser();
+
+  if (!data.user) {
+    signedIn.value = true;
+  }
+})
 </script>
 
 <template>
@@ -37,7 +49,8 @@ import Navbar from "~/server/components/Navbar.vue";
         <section class="pt-8">
           <h2 class="text-4xl font-bold font-mono mb-4 text-purple-100">Join the community</h2>
           <p class="text-lg mb-8 text-purple-100 font-mono">Start sharing your builds, ideas, and tools with other developers.</p>
-          <NuxtLink to="/signup" class="bg-purple-500 text-purple-100 px-6 py-3 rounded-2xl font-bold font-mono hover:bg-purple-600 transition-all duration-300 hover:drop-shadow-2xl">Sign Up</NuxtLink>
+          <NuxtLink to="/signup" v-if="signedIn" class="bg-purple-500 text-purple-100 px-6 py-3 rounded-2xl font-bold font-mono hover:bg-purple-600 transition-all duration-300 hover:drop-shadow-2xl">Sign Up</NuxtLink>
+          <NuxtLink to="/dashboard" v-else class="bg-purple-500 text-purple-100 px-6 py-3 rounded-2xl font-bold font-mono hover:bg-purple-600 transition-all duration-300 hover:drop-shadow-2xl">Go to Dashboard</NuxtLink>
         </section>
       </div>
     </div>
