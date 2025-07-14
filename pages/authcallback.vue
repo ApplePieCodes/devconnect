@@ -12,7 +12,7 @@ onMounted(async () => {
   })
 
 
-  window.location.replace(window.location.origin + '/devconnect/dashboard')
+  window.location.replace(window.location.origin + '/devconnect/wait')
 })
 </script>
 
