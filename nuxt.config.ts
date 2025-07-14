@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     baseURL: '/devconnect/',
 
     head: {
+      title: 'DevConnect',
       script: [
         {src: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"}
       ],
