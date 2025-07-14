@@ -172,7 +172,7 @@ async function deleteClicked(event: Event) {
         </button>
 
         <!-- Make the post content clickable to navigate to post -->
-        <a :href="'/post?id=' + id">
+        <a :href="'/devconnect/post?id=' + id">
           <button
               class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
           >
