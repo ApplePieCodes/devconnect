@@ -19,7 +19,7 @@ onMounted(async () => {
     pic.value = user.pfp_url !== ''
         ? user.pfp_url
         : `https://api.dicebear.com/9.x/glass/svg?seed=${user.username}`
-    url.value = `/user?username=${user.username}`
+    url.value = `/devconnect/user?username=${user.username}`
   }
 })
 </script>
