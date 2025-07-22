@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import UserIcon from '~/server/components/UserIcon.vue'
 import ButtonGroup from '~/server/components/ButtonGroup.vue'
 import { getLevelColor, getLoggedInUserID, getRankText, supabase } from '~/server'
+import PostContextMenu from "~/server/components/PostContextMenu.vue";
+import {SquareArrowOutUpRight, MessageSquareQuote, CircleChevronUp} from 'lucide-vue-next'
 
 const props = defineProps<{
   id: string
@@ -122,13 +124,27 @@ async function deleteClicked(event: Event) {
     <UserIcon v-if="userId" :id="userId" />
 
     <div class="flex-1">
-      <NuxtLink :to="ref('/user?username=' + username)"><p class="text-lg font-semibold">{{ displayName }} <svg v-if="verified" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#2E282A" stroke="#44b3e8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></p></NuxtLink>
-      <p class="text-sm text-gray-300">
-        <NuxtLink :to="'/user?username=' + username">@{{ username }}</NuxtLink>
-        <span class="ml-1" :class="levelColor">
-        • Level {{ level }} ({{ getRankText(level) }})
-      </span>
-      </p>
+      <div>
+        <div class="flex justify-between items-center">
+          <NuxtLink :to="ref('/user?username=' + username)">
+            <p class="inline text-lg font-semibold">
+              {{ displayName }}
+              <svg v-if="verified" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#2E282A" stroke="#44b3e8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+            </p>
+          </NuxtLink>
+
+          <div class="ml-auto">
+            <PostContextMenu :report="reportClicked" :delete="deleteClicked"/>
+          </div>
+        </div>
+
+        <p class="text-sm text-gray-300">
+          <NuxtLink :to="'/user?username=' + username">@{{ username }}</NuxtLink>
+          <span class="ml-1" :class="levelColor">
+            • Level {{ level }} ({{ getRankText(level) }})
+          </span>
+        </p>
+      </div>
 
       <NuxtLink :to="'/post?id=' + parentId" class="block">
         <div v-if="quotePost" class="ml-2">
@@ -146,29 +162,14 @@ async function deleteClicked(event: Event) {
             class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white hover:text-gray-50"
             :class="postUpvoted ? 'bg-purple-600 hover:bg-purple-500' : 'bg-gray-800 hover:bg-gray-700'"
         >
-          Upvote
+          <CircleChevronUp />
         </button>
 
         <button
             @click="quoteClicked"
             class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
         >
-          Quote
-        </button>
-
-        <button
-            @click="reportClicked"
-            class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
-        >
-          Report
-        </button>
-
-        <button
-            @click="deleteClicked"
-            class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
-            v-if="postIsViewers"
-        >
-          Delete Post
+          <MessageSquareQuote />
         </button>
 
         <!-- Make the post content clickable to navigate to post -->
@@ -176,14 +177,10 @@ async function deleteClicked(event: Event) {
           <button
               class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
           >
-            Go to Post
+            <SquareArrowOutUpRight/>
           </button>
         </a>
       </ButtonGroup>
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

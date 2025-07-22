@@ -8,6 +8,7 @@ import {getLevelColor, getLoggedInUserID, getRankText, supabase} from "~/server"
 import QuoteModal from "~/server/components/QuoteModal.vue";
 
   const postId = ref<string | null>()
+  const postExists = ref<boolean>(true);
   const body = ref('')
   const userId = ref<string>()
   const displayName = ref('')
@@ -27,12 +28,20 @@ import QuoteModal from "~/server/components/QuoteModal.vue";
   onMounted(async () => {
     const params = new URLSearchParams(window.location.search)
     const id = params.get('id')
-    if (!id) return
+    if (!id) {
+      postExists.value = false
+      return;
+    }
     console.log(id)
 
     postId.value = id
 
     var {data: p_data, error: p_error} = await supabase.from('posts').select('*').eq('id', postId.value).single();
+
+    if (!p_data || p_error) {
+      postExists.value = false
+      return;
+    }
 
     body.value = p_data.content;
     userId.value = p_data.poster;
@@ -118,62 +127,15 @@ import QuoteModal from "~/server/components/QuoteModal.vue";
 <template>
   <div class="bg-purple-950 min-h-screen">
     <Navbar/>
-    <div class="mx-50 flex items-start gap-4 mt-5 rounded-xl px-5 py-5 bg-purple-700 text-white hover:drop-shadow-2xl transition-all duration-300">
-      <UserIcon v-if="userId" :id="userId" />
-
-      <div>
-        <NuxtLink :to="'/user?username=' + username"><p class="text-lg font-semibold">{{ displayName }} <svg v-if="verified" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#2E282A" stroke="#44b3e8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></p></NuxtLink>
-        <p class="text-sm text-gray-300">
-          <NuxtLink :to="'/user?username=' + username">@{{ username }}</NuxtLink>
-          <span class="ml-1" :class="levelColor">
-          • Level {{ level }} ({{ getRankText(level) }})
-        </span>
-        </p>
-
-        <div v-if="quotePost" class="ml-2">
-          <p class="text-sm">Responding to:</p>
-          <p class="text-sm">@{{ parentPoster }}</p>
-          <p class="text-sm">{{ parentContent }}</p>
-        </div>
-
-        <p class="my-2 text-base">{{ body }}</p>
-
-        <ButtonGroup>
-          <button
-              @click="upvoteClicked"
-              class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white hover:text-gray-50"
-              :class="postUpvoted ? 'bg-purple-600 hover:bg-purple-500' : 'bg-gray-800 hover:bg-gray-700'"
-          >
-            Upvote
-          </button>
-
-
-          <button
-              @click="quoteClicked"
-              class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
-          >
-            Quote
-          </button>
-
-          <button
-              @click="reportClicked"
-              class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
-          >
-            Report
-          </button>
-
-          <button
-              @click="deleteClicked"
-              class="px-3 py-1.5 text-sm font-medium transition-colors focus:relative text-white bg-gray-800 hover:bg-gray-700 hover:text-gray-50"
-              v-if="postIsViewers"
-          >
-            Delete Post
-          </button>
-        </ButtonGroup>
+    <div v-if="(postId != null) && postExists">
+      <PostCard :id="postId" :on-quote="openQuoteModal" class="mx-10 xl:mx-50"/>
+      <div class="px-80">
+        <PostCard v-for="quote in quotes" :key="quote" :id="quote" :on-quote="openQuoteModal"/>
       </div>
     </div>
-    <div class="px-80">
-      <PostCard v-for="quote in quotes" :key="quote" :id="quote" :on-quote="openQuoteModal"/>
+    <div v-else class="flex justify-center flex-col">
+      <h1 class="text-center text-6xl text-white font-bold font-mono mt-75">Post Not Found :(</h1>
+      <NuxtLink to="/dashboard" class="xl:text-xl bg-purple-500 inline-block text-purple-100 px-6 py-3 rounded-2xl font-bold font-mono hover:bg-purple-600 transition-all duration-300 hover:drop-shadow-2xl mx-auto mt-5">Go to Dashboard</NuxtLink>
     </div>
     <QuoteModal :id="selectedPostId" :close-modal="closeQuoteModal" v-if="showQuoteModal"/>
   </div>

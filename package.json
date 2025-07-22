@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.23",
     "@supabase/supabase-js": "^2.50.5",
     "@uppy/dashboard": "^4.3.4",
     "@uppy/vue": "^2.3.0",
